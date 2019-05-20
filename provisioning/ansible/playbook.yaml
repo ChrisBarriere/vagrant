@@ -1,0 +1,35 @@
+- name: Prepare machine
+  hosts: all
+  gather_facts: true
+  become: true
+  roles:
+    - ./roles/commons
+  tags:
+    - configuration
+
+- name: Install docker
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/docker
+  tags:
+    - configuration
+
+- name: Install Docker Registry
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/services/docker_registry
+  tags:
+    - services
+
+- name: Install Traefik Reverse Proxy
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/services/traefik_rp
+  tags:
+    - services

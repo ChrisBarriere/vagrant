@@ -1,0 +1,107 @@
+#### Data directory of Traefik --- persistence in glusterfs volume for docker machines sharing ####
+- name: Ensure directories for data persistence for traefik exist
+  file:
+    state: directory
+    path: /vagrant/traefik_rp
+    owner: 1000 # because with user namespace it's 0 in container (id of root user)
+    group: 999 # because with user namespace it's 0 in container (id of root group)
+    mode: u=rwx,g=rwx,o=
+
+#### Network for Traefik --- for container with web applications ####
+- name: List Docker networks
+  shell: "docker network ls"
+  changed_when: False
+  register: dockerNetworks
+- name: Create missing Traefik Docker networks with attachable flag
+  shell: "docker network create --attachable traefik-net"
+  when: "'traefik-net' not in dockerNetworks.stdout"
+# - name: Ensure overlay network for traefik is present
+#   docker_network:
+#     name: traefik-net
+#     driver: overlay
+#     attachable: true
+#     state: present
+
+#### Launch Traefik service ####
+- name: Ensure traefik image is pulled from Docker Hub and pushed in private registry
+  shell: |
+    docker pull traefik:latest
+    docker tag traefik:latest registry.docker.{{localdomain}}:5000/traefik:latest
+    docker rmi traefik:latest
+    docker push registry.docker.{{localdomain}}:5000/traefik:latest
+- name: Ensure Traedfik is launched as docker service
+  docker_service:
+    project_name: reverse_proxy
+    definition:
+      version: "3.7"
+      services:
+        traefik:
+          image: registry.docker.{{localdomain}}:5000/traefik:latest
+          command:
+            ###### logs configuration ######
+            - "--loglevel=INFO"
+            - "--traefiklog"
+            - "--traefiklog.filePath=/var/log/traefik/traefik.log"
+            - "--accesslog=true"
+            - "--accesslog.filePath=/var/log/traefik/access.log"
+
+            ###### Entrypoints configuration ######
+            ### Default entrypoints ###
+            - "--defaultentrypoints=http"
+
+            ### HTTP entrypoint - port 80: ###
+            - "--entryPoints=Name:http Address::80"
+
+            ### Traefik tools entrypoint - port 8081 (not exposed on host)###
+            - "--entryPoints=Name:traefik-tools Address::8081"
+
+            ### Healthcheck entrypoint - port 8082 (not exposed on host)###
+            - "--entryPoints=Name:healthcheck Address::8082"
+
+            ###### activate url /ping on healthcheck entrypoint ######
+            - "--ping=true"
+            - "--ping.entryPoint=healthcheck"
+
+            ###### API and Dashboard on traefik-tools entrypoint ######
+            - "--api"
+            - "--api.entryPoint=traefik-tools"
+            - "--api.dashboard"
+
+            ### Docker provider
+            - "--docker"
+            - "--docker.domain={{localdomain}}"
+            - "--docker.endpoint=unix:///var/run/docker.sock"
+            - "--docker.watch"
+            - "--docker.exposedbydefault=false"
+          volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /vagrant/traefik_rp/logs:/var/log/traefik
+          networks:
+            traefik-net:
+              aliases:
+                - "{{localdomain}}"
+                - "traefik.{{localdomain}}"
+          ports:
+            - 80:80
+          labels:
+            # Enable traefik rules on container
+            - "traefik.enable=true"
+
+            # Ping Rule
+            - "traefik.ping.frontend.entryPoints=http"
+            - "traefik.ping.frontend.rule=Host:{{localdomain}};Path:/ping"
+            - "traefik.ping.port=8082"
+            - "traefik.ping.backend=traefik-healthcheck"
+
+            # Admin tools rules
+            - "traefik.tools.frontend.entryPoints=http"
+            - "traefik.tools.frontend.rule=Host:traefik.{{localdomain}}"
+            - "traefik.tools.port=8081"
+            - "traefik.tools.backend=traefik-tools"
+
+            # Traefik docker overlay network
+            - "traefik.docker.network=traefik-net"
+      networks:
+        traefik-net:
+          driver: overlay
+          external: true

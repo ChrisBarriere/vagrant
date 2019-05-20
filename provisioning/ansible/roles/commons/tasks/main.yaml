@@ -1,0 +1,22 @@
+- name: Ensure /etc/hosts is up to date
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+
+- name: Ensure that /etc/network/interfaces is up to date
+  template:
+    src: interfaces.j2
+    dest: /etc/network/interfaces
+  notify: restart eth0
+
+- name: Ensure timezone is set to {{ timezone }}
+  timezone:
+    name: "{{ timezone }}"
+
+- name: Ensure locale {{ locale }} is present
+  locale_gen:
+    name: "{{ locale }}"
+    state: present
+
+- name: Ensure default locale is {{ locale }}
+  command: /usr/sbin/update-locale LANG={{ locale }} LC_ALL={{ locale }}

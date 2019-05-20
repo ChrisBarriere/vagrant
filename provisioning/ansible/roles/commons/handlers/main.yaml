@@ -1,0 +1,4 @@
+- name: restart eth0
+  shell: |
+    ifdown --force eth0
+    ifup --force eth0

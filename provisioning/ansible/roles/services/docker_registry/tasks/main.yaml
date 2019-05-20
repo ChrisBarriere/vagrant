@@ -1,0 +1,23 @@
+#### Data directory of Docker registry ####
+- name: Ensure directories for data persistence for Docker Registry exists
+  file:
+    state: directory
+    path: /vagrant/registry.docker
+    owner: 1000 # because with user namespace it's 0 in container (id of root user)
+    group: 999 # because with user namespace it's 0 in container (id of root group)
+    mode: u=rwx,g=rwx,o=
+
+#### Launch Docker registry service ####
+- name: Ensure Docker Registry is launched as docker service
+  docker_service:
+    project_name: docker_registry
+    definition:
+      version: "3.7"
+      services:
+        registry:
+          image: registry:2
+          volumes:
+            - /vagrant/registry.docker/data:/var/lib/registry
+          ports:
+            - 5000:5000
+          hostname: registry.docker.{{localdomain}}

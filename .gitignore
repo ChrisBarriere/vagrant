@@ -1,1 +1,4 @@
 .vagrant
+powershell/.env.ps1
+registry.docker/*
+traefik_rp/*

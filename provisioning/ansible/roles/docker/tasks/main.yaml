@@ -1,0 +1,87 @@
+- name: Ensure older versions of docker are not installed
+  package:
+    name: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items:
+    - docker
+    - docker-engine
+    - docker.io
+
+- name: Ensure requirements packages for docker-ce are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+    - curl
+    - gnupg2
+    - software-properties-common
+
+- name: Ensure apt key for docker-ce is present
+  apt_key:
+    data: "{{ lookup('file', 'docker-ce.pgp') }}"
+    state: present
+
+- name: Ensure apt repository for docker-ce is present
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian stretch stable
+    state: present
+
+- name: Ensure docker-ce is installed
+  package:
+    name: docker-ce
+    update_cache: yes
+    install_recommends: yes
+    state: latest
+
+- name: Ensure docker group exists
+  group:
+    name: docker
+    state: present
+
+- name: Ensure vagrant user is in docker group
+  user:
+    name: vagrant
+    groups: docker
+    append: yes
+
+- name: Ensure docker is configured to use user namespace
+  template:
+    src: daemon.j2
+    dest: /etc/docker/daemon.json
+
+- name: Ensure subordinate uid is configured
+  copy:
+    src: subuid
+    dest: /etc/subuid
+
+- name: Ensure subordinate subgid is configured
+  copy:
+    src: subgid
+    dest: /etc/subgid
+
+- name: Ensure docker service is started
+  service:
+    name: docker
+    state: restarted
+    enabled: true
+
+- name: Ensure pip, virtualenv and setuptools are installed
+  apt:
+    name: [python-pip, python-virtualenv, python-setuptools]
+    state: latest
+    update_cache : true
+
+- name: Ensure python module for docker is installed
+  pip:
+    name: docker
+    version: latest
+    state: present
+
+- name: Ensure python module for docker-compose is installed
+  pip:
+    name: docker-compose
+    version: latest
+    state: present
