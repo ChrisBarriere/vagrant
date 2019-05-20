@@ -47,7 +47,7 @@ Pour faire fonctionner des machines virtuelles récentes dans Hyper-V, il faut s
 - Avoir récupérer les sources de ce projet sur gitlab :
 
 # 0. Créer un fichier d'environnement powershell\.env.ps1
-En
+ce fichier doit être créé dans le même format que le fichier ` powershell\.env.ps1-example` avec les valeurs correspondant à son environnement.
 
 # 1. Préparation d'Hyper-V
 On lance le script : `.\powershell\prepare_hyperv.ps1`
@@ -71,7 +71,7 @@ Ce script permet:
   - Registry Docker
   - Reverse proxy Traefik
 
-# 3. Script à lancer en cas de modification de conexion internet et de proxy
+# 3. Script à lancer en cas de modification de connexion internet et de proxy
 Il faut changer dans le fichier `powershell\.env.ps1` les valeurs de `$env:EXTERNAL_CONNECTION_NAME`, `$env:MY_PROXY` et `$env:NO_PROXY_RULES`
 
 On lance le script : `.\powershell\change_connection.ps1`
