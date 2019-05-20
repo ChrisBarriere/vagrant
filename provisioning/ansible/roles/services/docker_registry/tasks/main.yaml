@@ -8,7 +8,7 @@
     mode: u=rwx,g=rwx,o=
 
 #### Launch Docker registry service ####
-- name: Ensure Docker Registry is launched as docker service
+- name: Ensure Docker Registry is launched
   docker_service:
     project_name: docker_registry
     definition:

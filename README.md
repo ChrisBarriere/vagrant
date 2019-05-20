@@ -36,18 +36,24 @@
 - Mettre à jour la version de configuration des VMs Hyper-V
 Pour faire fonctionner des machines virtuelles récentes dans Hyper-V, il faut s'assurer d'avoir une version de configuration des machines virtuelles au moins égale à 8.3.
 
- Pour connaître la version supportée :
- `Get-VMHostSupportedVersion -Default`
+  Pour connaître la version supportée :
+  `Get-VMHostSupportedVersion -Default`
 
- Si c'est trop bas, c'est que la version de Windows n'est pas à jour. Il faut au moins installer la mise-à-jour 18.09 de Windows 10 (prévoir entre 1h et 2h pour cette mise-à-jour....)
+  Si c'est trop bas, c'est que la version de Windows n'est pas à jour. Il faut au moins installer la mise-à-jour 18.09 de Windows 10 (prévoir entre 1h et 2h pour cette mise-à-jour....)
 
 - Avoir installé Vagrant à l'aide du paquet MSI récupéré sur le site officiel. Pour la dernière version (actuellement 2.2.4) en 64 bits c'est ici :
- https://releases.hashicorp.com/vagrant/2.2.4/vagrant_2.2.4_x86_64.msi
+  https://releases.hashicorp.com/vagrant/2.2.4/vagrant_2.2.4_x86_64.msi
 
 - Avoir récupérer les sources de ce projet sur gitlab :
+  `git clone https://gitlab.com/charloup/my-vagrant-environment.git`
+
 
 # 0. Créer un fichier d'environnement powershell\.env.ps1
-ce fichier doit être créé dans le même format que le fichier ` powershell\.env.ps1-example` avec les valeurs correspondant à son environnement.
+ce fichier doit être créé dans le même format que le fichier `.\powershell\.env.ps1-example` avec les valeurs correspondant à notre environnement.
+
+Copie du fichier : `Copy-Item .\powershell\.env.ps1-example -Destination .\powershell\.env.ps1`
+
+Modification du fichier : `notepad .\powershell\.env.ps1`
 
 # 1. Préparation d'Hyper-V
 On lance le script : `.\powershell\prepare_hyperv.ps1`
@@ -66,7 +72,7 @@ Ce script permet:
 - de récupérer la box generic/debian9 pour le provider hyperv
 - de lancer la machine via vagrant et de la configurer :
   - via le shell pour la résolution de nom
-  - via ansible_local pour configurer le nom d'hôte, le fqdn, l'ip, le ntp, la locale, et installer git, des éditeurs de texte (vi, vim, nano) et docker
+  - via ansible_local pour configurer le nom d'hôte, le fqdn, l'ip, le ntp, la locale, et installer git, des éditeurs de texte (vim, nano) et docker
 - de redémarrer la machine et de la provisionner avec les services suivants :
   - Registry Docker
   - Reverse proxy Traefik
@@ -74,7 +80,9 @@ Ce script permet:
 # 3. Script à lancer en cas de modification de connexion internet et de proxy
 Il faut changer dans le fichier `powershell\.env.ps1` les valeurs de `$env:EXTERNAL_CONNECTION_NAME`, `$env:MY_PROXY` et `$env:NO_PROXY_RULES`
 
-On lance le script : `.\powershell\change_connection.ps1`
+Modification du fichier : `notepad .\powershell\.env.ps1`
+
+Puis on lance le script : `.\powershell\change_connection.ps1`
 
 ce script va :
 - modifier le partage de connexion internet

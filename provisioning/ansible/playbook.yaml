@@ -7,6 +7,15 @@
   tags:
     - configuration
 
+- name: Install dev tools (git, nano, vim)
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/dev-tools
+  tags:
+    - configuration
+
 - name: Install docker
   hosts: all
   gather_facts: false

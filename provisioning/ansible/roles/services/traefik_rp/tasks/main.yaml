@@ -29,7 +29,7 @@
     docker tag traefik:latest registry.docker.{{localdomain}}:5000/traefik:latest
     docker rmi traefik:latest
     docker push registry.docker.{{localdomain}}:5000/traefik:latest
-- name: Ensure Traedfik is launched as docker service
+- name: Ensure Traefik is launched
   docker_service:
     project_name: reverse_proxy
     definition:

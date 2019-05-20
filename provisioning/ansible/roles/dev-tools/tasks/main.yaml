@@ -1,0 +1,8 @@
+- name: Ensure dev-tools packages are installed
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - nano
+    - vim
