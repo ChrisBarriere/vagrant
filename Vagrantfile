@@ -57,7 +57,7 @@ Vagrant.configure("2") do |config|
 
   # Partage de fichier de type smb entre la vm et la machine hôte
   config.vm.synced_folder ".", "/vagrant", type: "smb",
-	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME']
+	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME'], mount_options: ["iocharset=utf8","uid=1000","gid=1000","forcegid","forceuid","dynperm"]
 
   # ------------------- Provisionnement qui s'exécute une seule fois au up
   # Provisionnement avec un shell pour mettre-à-jour resolvconf avec le DNS Acrylic
