@@ -1,21 +1,21 @@
 #Requires -Version 3.0
 
 Function Set-InternetConnectionSharingIPAddressRange {
-<#
-  .SYNOPSIS
-    Mettre-à-jour l'adressage réseau du réseau bénéficant du partage de connexion Internet
-  .DESCRIPTION
-    Set-InternetConnectionSharingIPAddressRange est une fonction qui permet de mettre-à-jour l'adressage réseau du réseau bénéficant du partage de connexion Internet.
-  .PARAMETER ScopeAddress
-    La valeur de la première addresse à utiliser
-  .EXAMPLE
-    Set-InternetConnectionSharingIPAddressRange -ScopeAddress '192.168.137.1'
-  .INPUTS
-    String
-  .NOTES
-    Author:  Christophe BARRIERE
-    Website: https://gitlab.com/charloup
-#>
+  <#
+    .SYNOPSIS
+      Mettre-à-jour l'adressage réseau du réseau bénéficant du partage de connexion Internet
+    .DESCRIPTION
+      Set-InternetConnectionSharingIPAddressRange est une fonction qui permet de mettre-à-jour l'adressage réseau du réseau bénéficant du partage de connexion Internet.
+    .PARAMETER ScopeAddress
+      La valeur de la première addresse à utiliser
+    .EXAMPLE
+      Set-InternetConnectionSharingIPAddressRange -ScopeAddress '192.168.137.1'
+    .INPUTS
+      String
+    .NOTES
+      Author:  Christophe BARRIERE
+      Website: https://gitlab.com/charloup
+  #>
 
   [CmdletBinding()]
 
@@ -30,27 +30,27 @@ Function Set-InternetConnectionSharingIPAddressRange {
 }
 
 Function Get-InternetConnectionSharingConfiguration {
-<#
-  .SYNOPSIS
-    Récupérer la configuration du partage de connexion internet pour les cartes réseau spécifiées.
-  .DESCRIPTION
-    Get-InternetConnectionSharingConfiguration est une fonction qui permet de récupérer la configuration du partage de connexion internet pour les cartes réseau spécifiées.
-  .PARAMETER InterfaceNames
-    Les noms des cartes réseau dont il faut récupérer le status
-  .EXAMPLE
-    Get-InternetConnectionSharingConfiguration -InterfaceNames 'My Enterprise Network', 'Wi-fi', 'Internal Virtual Switch'
-  .EXAMPLE
-    'My Enterprise Network', 'Wi-fi', 'Internal Virtual Switch' | Get-InternetConnectionSharingConfiguration
-  .EXAMPLE
-    Get-NetAdapter | Get-InternetConnectionSharingConfiguration
-  .INPUTS
-    String
-  .OUTPUTS
-    PSCustomObject
-  .NOTES
-    Author:  Christophe BARRIERE
-    Website: https://gitlab.com/charloup
-#>
+  <#
+    .SYNOPSIS
+      Récupérer la configuration du partage de connexion internet pour les cartes réseau spécifiées.
+    .DESCRIPTION
+      Get-InternetConnectionSharingConfiguration est une fonction qui permet de récupérer la configuration du partage de connexion internet pour les cartes réseau spécifiées.
+    .PARAMETER InterfaceNames
+      Les noms des cartes réseau dont il faut récupérer le status
+    .EXAMPLE
+      Get-InternetConnectionSharingConfiguration -InterfaceNames 'My Enterprise Network', 'Wi-fi', 'Internal Virtual Switch'
+    .EXAMPLE
+      'My Enterprise Network', 'Wi-fi', 'Internal Virtual Switch' | Get-InternetConnectionSharingConfiguration
+    .EXAMPLE
+      Get-NetAdapter | Get-InternetConnectionSharingConfiguration
+    .INPUTS
+      String
+    .OUTPUTS
+      PSCustomObject
+    .NOTES
+      Author:  Christophe BARRIERE
+      Website: https://gitlab.com/charloup
+  #>
 
   [CmdletBinding()]
 
@@ -80,7 +80,7 @@ Function Get-InternetConnectionSharingConfiguration {
 
   PROCESS {
     foreach ($Interface in $InterfaceNames) {
-      # Recherche d'une connection pour la carte réseau
+      # Recherche d'une connexion pour la carte réseau
       $connection = $netShare.EnumEveryConnection | Where-Object { $netShare.NetConnectionProps.Invoke($_).Name -eq $Interface }
       try {
         # Récupération de la configuration de partage de connexion internet pour la carte réseau
@@ -88,7 +88,7 @@ Function Get-InternetConnectionSharingConfiguration {
       }
       catch {
         # Si erreur affichage d'un message d'erreur et passage à la carte réseau suivante
-        Write-Warning -Message "Impossible de récupérer la configuration du partge de connexion internet pour la carte réseau: '$Interface'"
+        Write-Warning -Message "Impossible de récupérer la configuration du partage de connexion internet pour la carte réseau: '$Interface'"
         Continue
       }
       # Ajout de la configuration à l'objet de retour de fonction
@@ -103,21 +103,21 @@ Function Get-InternetConnectionSharingConfiguration {
 }
 
 Function Disable-InternetConnectionSharing {
-<#
-  .SYNOPSIS
-    Désactiver le partage de connexion internet entre deux cartes réseau.
-  .DESCRIPTION
-    Disable-InternetConnectionSharing est une fonction qui permet de désactiver le partage de connexion internet entre deux cartes réseau.
-  .PARAMETER InterfaceNameMaster
-    Le nom de la carte réseau qui est partagée
-  .PARAMETER InterfaceNameClient
-    Le nom de la carte réseau qui utilise le partage
-  .EXAMPLE
-    Disable-InternetConnectionSharing -InterfaceNameMaster 'Wi-fi' -InterfaceNameClient 'Internal Virtual Switch'
-  .NOTES
-    Author:  Christophe BARRIERE
-    Website: https://gitlab.com/charloup
-#>
+  <#
+    .SYNOPSIS
+      Désactiver le partage de connexion internet entre deux cartes réseau.
+    .DESCRIPTION
+      Disable-InternetConnectionSharing est une fonction qui permet de désactiver le partage de connexion internet entre deux cartes réseau.
+    .PARAMETER InterfaceNameMaster
+      Le nom de la carte réseau qui est partagée
+    .PARAMETER InterfaceNameClient
+      Le nom de la carte réseau qui utilise le partage
+    .EXAMPLE
+      Disable-InternetConnectionSharing -InterfaceNameMaster 'Wi-fi' -InterfaceNameClient 'Internal Virtual Switch'
+    .NOTES
+      Author:  Christophe BARRIERE
+      Website: https://gitlab.com/charloup
+  #>
 
   [CmdletBinding()]
 
@@ -208,24 +208,23 @@ Function Disable-InternetConnectionSharing {
   }
 }
 
-
 Function Enable-InternetConnectionSharing {
-<#
-  .SYNOPSIS
-    Activer le partage de connexion internet entre deux cartes réseau.
-  .DESCRIPTION
-    Enable-InternetConnectionSharing est une fonction qui permet d'activer le partage de connexion internet entre deux carteq réseau.
-  .PARAMETER InterfaceNameMaster
-    Le nom de la carte réseau qui doit partager la connexion internet
-  .PARAMETER InterfaceNameClient
-    Le nom de la carte réseau qui doit utiliser le partage de connexion internet
-  .EXAMPLE
-    Enable-InternetConnectionSharing -InterfaceNameMaster 'Wi-fi' -InterfaceNameClient 'Internal Virtual Switch'
-  .EXAMPLE
-  .NOTES
-    Author:  Christophe BARRIERE
-    Website: https://gitlab.com/charloup
-#>
+  <#
+    .SYNOPSIS
+      Activer le partage de connexion internet entre deux cartes réseau.
+    .DESCRIPTION
+      Enable-InternetConnectionSharing est une fonction qui permet d'activer le partage de connexion internet entre deux carteq réseau.
+    .PARAMETER InterfaceNameMaster
+      Le nom de la carte réseau qui doit partager la connexion internet
+    .PARAMETER InterfaceNameClient
+      Le nom de la carte réseau qui doit utiliser le partage de connexion internet
+    .EXAMPLE
+      Enable-InternetConnectionSharing -InterfaceNameMaster 'Wi-fi' -InterfaceNameClient 'Internal Virtual Switch'
+    .EXAMPLE
+    .NOTES
+      Author:  Christophe BARRIERE
+      Website: https://gitlab.com/charloup
+  #>
 
   [CmdletBinding()]
 

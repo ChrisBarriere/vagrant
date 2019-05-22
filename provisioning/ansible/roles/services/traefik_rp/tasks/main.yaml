@@ -3,24 +3,16 @@
   file:
     state: directory
     path: /vagrant/traefik_rp
-    owner: 1000 # because with user namespace it's 0 in container (id of root user)
-    group: 999 # because with user namespace it's 0 in container (id of root group)
+    owner: '1000' # because with user namespace it's 0 in container (id of root user)
+    group: '999' # because with user namespace it's 0 in container (id of root group)
     mode: u=rwx,g=rwx,o=
 
 #### Network for Traefik --- for container with web applications ####
-- name: List Docker networks
-  shell: "docker network ls"
-  changed_when: False
-  register: dockerNetworks
-- name: Create missing Traefik Docker networks with attachable flag
-  shell: "docker network create --attachable traefik-net"
-  when: "'traefik-net' not in dockerNetworks.stdout"
-# - name: Ensure overlay network for traefik is present
-#   docker_network:
-#     name: traefik-net
-#     driver: overlay
-#     attachable: true
-#     state: present
+- name: Ensure overlay network for traefik is present
+  docker_network:
+    name: traefik-net
+    attachable: true
+    state: present
 
 #### Launch Traefik service ####
 - name: Ensure traefik image is pulled from Docker Hub and pushed in private registry
@@ -30,7 +22,7 @@
     docker rmi traefik:latest
     docker push registry.docker.{{localdomain}}:5000/traefik:latest
 - name: Ensure Traefik is launched
-  docker_service:
+  docker_compose:
     project_name: reverse_proxy
     definition:
       version: "3.7"

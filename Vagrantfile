@@ -6,6 +6,9 @@
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
+  # Par défut c'est bash -l qu'on change en bash (cf https://superuser.com/questions/1160025/how-to-solve-ttyname-failed-inappropriate-ioctl-for-device-in-vagrant)
+  config.ssh.shell="bash"
+
   # Le nom Vagrant de la VM
   config.vm.define ENV['VM_HYPERV_NAME']
 
@@ -55,8 +58,12 @@ Vagrant.configure("2") do |config|
 
   # Pas de config.vm.network avec le provider hyperv (voir https://www.vagrantup.com/docs/hyperv/limitations.html)
 
-  # Partage de fichier de type smb entre la vm et la machine hôte
+  # Partage de fichier de type smb entre la vm et la machine hôte pour le répertoire courant vagrant
   config.vm.synced_folder ".", "/vagrant", type: "smb",
+	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME'], mount_options: ["iocharset=utf8","uid=1000","gid=1000","forcegid","forceuid","dynperm"]
+
+  # Partage de fichier de type smb entre la vm et la machine hôte pour mon répertoire avec mes projets
+  config.vm.synced_folder "../myprojects", "/myprojects", type: "smb",
 	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME'], mount_options: ["iocharset=utf8","uid=1000","gid=1000","forcegid","forceuid","dynperm"]
 
   # ------------------- Provisionnement qui s'exécute une seule fois au up
@@ -67,9 +74,11 @@ Vagrant.configure("2") do |config|
   end
   # Provisionnement avec ansible en local (étape de configuration qui est lancée automatiquement au up et une seule fois)
   config.vm.provision "ansible_local_init", type:"ansible_local", run: "once" do |ansible|
+    ansible.config_file= "/vagrant/provisioning/ansible/.ansible.cfg"
     ansible.playbook = "/vagrant/provisioning/ansible/playbook.yaml"
     ansible.install_mode = "pip"
-    ansible.version = "2.7.0"
+    ansible.version = "2.8.0"
+    ansible.compatibility_mode = "2.0"
     ansible.extra_vars = {
       localdomain: ENV['DEV_DOMAIN']
     }
@@ -80,7 +89,9 @@ Vagrant.configure("2") do |config|
   # ------------------- Provisionnement qui s'exécute à la demande pour les services
   # Provisionnement avec ansible en local (étape de mise en place des services qui doit être lancée manuellement via vagrant provision --provision-with ansible_local_services)
   config.vm.provision "ansible_local_services", type:"ansible_local", run: "never" do |ansible|
+    ansible.config_file= "/vagrant/provisioning/ansible/.ansible.cfg"
     ansible.playbook = "/vagrant/provisioning/ansible/playbook.yaml"
+    ansible.compatibility_mode = "2.0"
     ansible.extra_vars = {
       localdomain: ENV['DEV_DOMAIN']
     }

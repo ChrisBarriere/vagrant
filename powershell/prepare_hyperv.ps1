@@ -1,3 +1,6 @@
+# dotsource du fichier avec les variables d'environnement
+. $PSScriptRoot\.env.ps1
+
 # dotsource de mes cmdlets powershell
 . $PSScriptRoot\lib\manageSharingInternetConnection.ps1
 . $PSScriptRoot\lib\createVirtualSwitch.ps1

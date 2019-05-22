@@ -3,13 +3,13 @@
   file:
     state: directory
     path: /vagrant/registry.docker
-    owner: 1000 # because with user namespace it's 0 in container (id of root user)
-    group: 999 # because with user namespace it's 0 in container (id of root group)
+    owner: '1000' # because with user namespace it's 0 in container (id of root user)
+    group: '999' # because with user namespace it's 0 in container (id of root group)
     mode: u=rwx,g=rwx,o=
 
 #### Launch Docker registry service ####
 - name: Ensure Docker Registry is launched
-  docker_service:
+  docker_compose:
     project_name: docker_registry
     definition:
       version: "3.7"
