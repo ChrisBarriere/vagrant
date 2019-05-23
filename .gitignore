@@ -3,3 +3,4 @@ powershell/.env.ps1
 registry.docker/data/docker
 traefik_rp/logs/access.log
 traefik_rp/logs/traefik.log
+*.log
