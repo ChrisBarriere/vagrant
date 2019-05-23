@@ -93,6 +93,8 @@
 
             # Traefik docker overlay network
             - "traefik.docker.network=traefik-net"
+          hostname: rp.{{localdomain}}
+          restart: always
       networks:
         traefik-net:
           driver: overlay

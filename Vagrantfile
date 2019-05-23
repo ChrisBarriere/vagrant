@@ -47,7 +47,7 @@ Vagrant.configure("2") do |config|
     config.proxy.no_proxy = ENV['NO_PROXY']
   end
 
-  # Configuration du plugin hostmanager (on le désactive pour ne le lancer que durant le provisionning)
+  # Configuration du plugin hostmanager (il est activé pour pouvoir se déclencher à chaque up ou chaque reload)
   if Vagrant.has_plugin?("vagrant-hostmanager")
     config.hostmanager.enabled = true
     config.hostmanager.manage_host = true
