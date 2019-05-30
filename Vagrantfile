@@ -103,7 +103,7 @@ Vagrant.configure("2") do |config|
     }
     ansible.verbose = ""
   end
-  # Provisionnement avec ansible en local (émodification de la configuration du proxy qui doit être lancée manuellement via vagrant provision --provision-with ansible_local_services)
+  # Provisionnement avec ansible en local (modification de la configuration du proxy qui doit être lancée manuellement via vagrant provision --provision-with ansible_local_updateproxy)
   config.vm.provision "ansible_local_updateproxy", type:"ansible_local", run: "never" do |ansible|
     ansible.config_file= "/vagrant/provisioning/ansible/.ansible.cfg"
     ansible.playbook = "/vagrant/provisioning/ansible/updateproxy.yaml"
