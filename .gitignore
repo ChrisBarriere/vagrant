@@ -4,5 +4,5 @@ registry.docker/data/*
 !registry.docker/data/README.md
 traefik_rp/logs/*
 !traefik_rp/logs/README.md
-mailhog/data/*
-!mailhog/data/README.md
+mailhog/*
+!mailhog/README.md
