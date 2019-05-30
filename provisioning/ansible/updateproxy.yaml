@@ -1,0 +1,6 @@
+- name: Ensure cntlm proxy is installed with configuration up to date
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/cntlm_proxy

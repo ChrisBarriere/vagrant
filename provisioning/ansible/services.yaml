@@ -1,0 +1,8 @@
+- name: Ensure services are availables
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/services/docker_registry
+    - ./roles/services/traefik_rp
+    - ./roles/services/mailhog

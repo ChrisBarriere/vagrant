@@ -16,6 +16,7 @@
       services:
         registry:
           image: registry:2
+          container_name: docker-registry
           volumes:
             - /vagrant/registry.docker/data:/var/lib/registry
           ports:

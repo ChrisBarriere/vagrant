@@ -1,0 +1,15 @@
+- name: Ensure cntlm proxy is installed
+  apt:
+    name: cntlm
+    state: present
+
+- name: Ensure cntlm conf is up to date
+  template:
+    src: cntlm.conf.j2
+    dest: /etc/cntlm.conf
+
+- name: Ensure cntlm service is started with configuration up to date
+  service:
+    name: cntlm
+    state: restarted
+    enabled: true

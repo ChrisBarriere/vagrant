@@ -1,0 +1,27 @@
+- name: Ensure configuration of machine (/etc/hosts, timezone, locale)
+  hosts: all
+  gather_facts: true
+  become: true
+  roles:
+    - ./roles/commons
+
+- name: Ensure development utils tools are installed (git, nano, vim, curl)
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/dev-tools
+
+- name: Ensure cntlm proxy is installed with configuration up to date
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/cntlm_proxy
+
+- name: Ensure docker is installed
+  hosts: all
+  gather_facts: false
+  become: true
+  roles:
+    - ./roles/docker

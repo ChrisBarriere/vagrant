@@ -256,13 +256,16 @@ Function Enable-InternetConnectionSharing {
     $actualMaster = $configurationResult | where { ($_.SharingEnabled -eq $true) -and ($_.SharingConnectionType -eq 0) }
     $actualMasterName = $actualMaster.Name
     $actualClient = $configurationResult | where { ($_.SharingEnabled -eq $true) -and ($_.SharingConnectionType -eq 1) }
-    $actualClientName = $actualClient.name
+    $actualClientName = $actualClient.Name
     if (($actualMasterName -eq $InterfaceNameMaster) -and ($actualClientName -eq $InterfaceNameClient)) {
       Write-Warning "Le partage entre $actualMasterName et $actualClientName est déjà activé."
       return
     }
+
     else {
-      Disable-InternetConnectionSharing -InterfaceNameMaster $actualMasterName -InterfaceNameClient $actualClientName
+      if ($actualClientName) {
+        Disable-InternetConnectionSharing -InterfaceNameMaster $actualMasterName -InterfaceNameClient $actualClientName
+      }
     }
   }
 

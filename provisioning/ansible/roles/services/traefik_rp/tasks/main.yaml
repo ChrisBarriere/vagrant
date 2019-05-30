@@ -1,4 +1,4 @@
-#### Data directory of Traefik --- persistence in glusterfs volume for docker machines sharing ####
+#### Data directory of Traefik ####
 - name: Ensure directories for data persistence for traefik exist
   file:
     state: directory
@@ -8,7 +8,7 @@
     mode: u=rwx,g=rwx,o=
 
 #### Network for Traefik --- for container with web applications ####
-- name: Ensure overlay network for traefik is present
+- name: Ensure network for traefik is present
   docker_network:
     name: traefik-net
     attachable: true
@@ -29,6 +29,7 @@
       services:
         traefik:
           image: registry.docker.{{localdomain}}:5000/traefik:latest
+          container_name: traefik
           command:
             ###### logs configuration ######
             - "--loglevel=INFO"

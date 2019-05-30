@@ -1,0 +1,54 @@
+#### Data directory of Traefik ####
+- name: Ensure directories for data persistence for traefik exist
+  file:
+    state: directory
+    path: /vagrant/mailhog
+    owner: '1000' # because with user namespace it's 0 in container (id of root user)
+    group: '999' # because with user namespace it's 0 in container (id of root group)
+    mode: u=rwx,g=rwx,o=
+
+#### Launch mailhog services ####
+- name: Ensure mailhog image is pulled from Docker Hub and pushed in private registry
+  shell: |
+    docker pull mailhog/mailhog:latest
+    docker tag mailhog/mailhog:latest registry.docker.{{localdomain}}:5000/mailhog/mailhog:latest
+    docker rmi mailhog/mailhog:latest
+    docker push registry.docker.{{localdomain}}:5000/mailhog/mailhog:latest
+- name: Ensure Mailhog is launched
+  docker_compose:
+    project_name: mailhog
+    definition:
+      version: "3.7"
+      services:
+        mailhog:
+          image: registry.docker.{{localdomain}}:5000/mailhog/mailhog:latest
+          container_name: mailhog
+          user: root:root
+          environment:
+            - MH_STORAGE=maildir
+            - MH_MAILDIR_PATH=/maildir
+            - MH_HOSTNAME=mailhog.{{localdomain}}
+          volumes:
+            - /vagrant/mailhog:/maildir
+          networks:
+            - traefik-net
+          ports:
+            - 1025:1025
+          labels:
+            # Enable traefik rules on container
+            - "traefik.enable=true"
+
+            # Traefik Rule
+            - "traefik.frontend.entryPoints=http"
+            - "traefik.frontend.rule=Host:mailhog.{{localdomain}}"
+            - "traefik.port=8025"
+            - "traefik.backend=mailhog"
+
+            # Traefik docker overlay network
+            - "traefik.docker.network=traefik-net"
+          hostname: mailhog.{{localdomain}}
+          restart: always
+      networks:
+        traefik-net:
+          driver: overlay
+          external: true

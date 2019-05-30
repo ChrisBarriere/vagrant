@@ -1,23 +1,13 @@
 - name: Ensure older versions of docker are not installed
-  package:
-    name: "{{ item }}"
+  apt:
+    name: ['docker', 'docker-engine', 'docker.io']
     state: absent
     purge: yes
-  with_items:
-    - docker
-    - docker-engine
-    - docker.io
 
 - name: Ensure requirements packages for docker-ce are installed
-  package:
-    name: "{{ item }}"
+  apt:
+    name: ['apt-transport-https','ca-certificates', 'curl', 'gnupg2', 'software-properties-common']
     state: present
-  with_items:
-    - apt-transport-https
-    - ca-certificates
-    - curl
-    - gnupg2
-    - software-properties-common
 
 - name: Ensure apt key for docker-ce is present
   apt_key:
@@ -30,7 +20,7 @@
     state: present
 
 - name: Ensure docker-ce is installed
-  package:
+  apt:
     name: docker-ce
     update_cache: yes
     install_recommends: yes
@@ -57,7 +47,7 @@
     src: subuid
     dest: /etc/subuid
 
-- name: Ensure subordinate subgid is configured
+- name: Ensure subordinate gid is configured
   copy:
     src: subgid
     dest: /etc/subgid
@@ -70,7 +60,7 @@
 
 - name: Ensure pip, virtualenv and setuptools are installed
   apt:
-    name: [python-pip, python-virtualenv, python-setuptools]
+    name: ['python-pip', 'python-virtualenv', 'python-setuptools']
     state: latest
     update_cache : true
 
