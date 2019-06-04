@@ -2,8 +2,8 @@
 Proxy           noproxy.{{localdomain}}:3128
 NoProxy         *
 {% else %}
-Proxy           {{external_proxy_url}}
-NoProxy         localhost, 127.0.0.*, 10.*, 192.168.*,172.*,{{external_proxy_no_proxy_rules}},.{{localdomain}}
+Proxy           {{external_proxy_url|regex_replace('^(?P<scheme>.+)://(?P<host>.+):(?P<port>\\d+)$', '\\g<host>:\\g<port>')}}
+NoProxy         localhost, 127.0.0.*, 10.*, 192.168.*, 172.*, {{external_proxy_no_proxy_rules}}, *{{localdomain}}
 {% endif %}
 Listen          3128
 Gateway         yes

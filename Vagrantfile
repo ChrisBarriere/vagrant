@@ -55,7 +55,7 @@ Vagrant.configure("2") do |config|
     config.hostmanager.manage_host = true
     config.hostmanager.manage_guest = false
     config.hostmanager.ignore_private_ip = false
-    config.hostmanager.aliases = ['registry.docker.' + ENV['DEV_DOMAIN'], 'traefik.' + ENV['DEV_DOMAIN'], 'mailhog.' + ENV['DEV_DOMAIN']]
+    config.hostmanager.aliases = [ENV['DEV_DOMAIN'], 'registry.docker.' + ENV['DEV_DOMAIN'], 'traefik.' + ENV['DEV_DOMAIN'], 'mailhog.' + ENV['DEV_DOMAIN']]
   end
 
   # Pas de config.vm.network avec le provider hyperv (voir https://www.vagrantup.com/docs/hyperv/limitations.html)

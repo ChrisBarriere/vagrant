@@ -12,5 +12,5 @@ if (vagrant status --machine-readable $env:VM_HYPERV_NAME | Select-String -Patte
   vagrant up --provision_with ansible_local_updateproxy
 }
 if (vagrant status --machine-readable $env:VM_HYPERV_NAME | Select-String -Pattern ',state,running') {
-  vagrant provision --provision_with ansible_updateproxy
+  vagrant provision --provision_with ansible_local_updateproxy
 }
