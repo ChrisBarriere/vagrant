@@ -2,6 +2,9 @@
   hosts: all
   gather_facts: false
   become: true
+  pre_tasks:
+    - name: Ensure docker service is enabled
+      shell: systemctl daemon-reload && systemctl restart docker
   roles:
     - ./roles/services/docker_registry
     - ./roles/services/traefik_rp

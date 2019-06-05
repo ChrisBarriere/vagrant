@@ -18,5 +18,5 @@ if(!(Test-Path -Path $env:PROJECTS_DIRECTORY)) {
 # Installation de la machine virtuelle via vagrant up (elle sera provisionnée avec shell_init et ansible_local_init)
 vagrant up
 
-# On redémarre la machine (on doit le faire pour être sûr que le configuration du proxy est disponible pour git et docker) et on provisionne les services
-vagrant reload --provision_with ansible_local_services
+# Configuration du proxy pour les nouveaux services (git et docker) et on provisionne les services (docker registry, traefik et mailhog)
+vagrant provision --provision_with ansible_local_services

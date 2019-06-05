@@ -52,12 +52,6 @@
     src: subgid
     dest: /etc/subgid
 
-- name: Ensure docker service is started
-  service:
-    name: docker
-    state: restarted
-    enabled: true
-
 - name: Ensure pip, virtualenv and setuptools are installed
   apt:
     name: ['python-pip', 'python-virtualenv', 'python-setuptools']
