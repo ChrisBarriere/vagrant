@@ -69,9 +69,15 @@
     name: docker
     version: latest
     state: present
+  environment:
+    HTTP_PROXY: "{{ external_proxy_url if external_proxy_url != 'DIRECT' else '' }}"
+    HTTPS_PROXY: "{{ external_proxy_url if external_proxy_url != 'DIRECT' else '' }}"
 
 - name: Ensure python module for docker-compose is installed
   pip:
     name: docker-compose
     version: latest
     state: present
+  environment:
+    HTTP_PROXY: "{{ external_proxy_url if external_proxy_url != 'DIRECT' else '' }}"
+    HTTPS_PROXY: "{{ external_proxy_url if external_proxy_url != 'DIRECT' else '' }}"

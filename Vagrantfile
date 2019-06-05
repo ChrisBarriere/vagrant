@@ -59,13 +59,15 @@ Vagrant.configure("2") do |config|
   end
 
   # Pas de config.vm.network avec le provider hyperv (voir https://www.vagrantup.com/docs/hyperv/limitations.html)
+  # mais on peut tout de même donner le nom du switch pour ne pas avoir à répondre à une question
+  config.vm.network "public_network", bridge: "Vagrant"
 
   # Partage de fichier de type smb entre la vm et la machine hôte pour le répertoire courant vagrant
   config.vm.synced_folder ".", "/vagrant", type: "smb",
 	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME'], mount_options: ["iocharset=utf8","uid=1000","gid=1000","forcegid","forceuid","dynperm"]
 
   # Partage de fichier de type smb entre la vm et la machine hôte pour mon répertoire avec mes projets
-  config.vm.synced_folder "../myprojects", "/myprojects", type: "smb",
+  config.vm.synced_folder ENV['PROJECTS_DIRECTORY'], "/myprojects", type: "smb",
 	  smb_password: ENV['SMB_PASSWORD'], smb_username: ENV['SMB_USERNAME'], mount_options: ["iocharset=utf8","uid=1000","gid=1000","forcegid","forceuid","dynperm","mfsymlinks"]
 
   # ------------------- Provisionnement qui s'exécute une seule fois au up
