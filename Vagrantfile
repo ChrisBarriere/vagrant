@@ -71,7 +71,7 @@ Vagrant.configure("2") do |config|
   # ------------------- Provisionnement qui s'exécute une seule fois au up
   # Provisionnement avec un shell pour mettre-à-jour resolvconf avec le DNS géré par ICS et paramétré le searchdomain
   config.vm.provision "shell_init", type:"shell", run: "once" do |shell|
-    shell.path = "./provisioning/shell/updateresolvconf.sh"
+    shell.path = "./provisioning/shell/init.sh"
     shell.args = [ENV['DEV_DOMAIN'], ENV['EXTERNAL_PROXY_URL']]
   end
   # Provisionnement avec ansible en local (étape de configuration qui est lancée automatiquement au up et une seule fois)
