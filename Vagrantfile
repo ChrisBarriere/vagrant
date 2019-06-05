@@ -72,17 +72,12 @@ Vagrant.configure("2") do |config|
   # Provisionnement avec un shell pour mettre-à-jour resolvconf avec le DNS géré par ICS et paramétré le searchdomain
   config.vm.provision "shell_init", type:"shell", run: "once" do |shell|
     shell.path = "./provisioning/shell/updateresolvconf.sh"
-    shell.args = [ENV['DEV_DOMAIN']]
+    shell.args = [ENV['DEV_DOMAIN'], ENV['EXTERNAL_PROXY_URL']]
   end
   # Provisionnement avec ansible en local (étape de configuration qui est lancée automatiquement au up et une seule fois)
   config.vm.provision "ansible_local_init", type:"ansible_local", run: "once" do |ansible|
     ansible.config_file= "/vagrant/provisioning/ansible/.ansible.cfg"
     ansible.playbook = "/vagrant/provisioning/ansible/init.yaml"
-    ansible.install_mode = "pip"
-    if ENV['EXTERNAL_PROXY_URL'] != "DIRECT"
-      ansible.pip_args = "--proxy " + ENV["EXTERNAL_PROXY_URL"]
-    end
-    ansible.version = "2.8.0"
     ansible.compatibility_mode = "2.0"
     ansible.extra_vars = {
       localdomain: ENV['DEV_DOMAIN'],
